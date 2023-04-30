@@ -4,8 +4,7 @@
 #include <sys/time.h>
 #include <omp.h>
 
-double gettime(void)
-{
+double gettime(void){
 	struct timeval ttime;
 	gettimeofday(&ttime, NULL);
 	return ttime.tv_sec+ttime.tv_usec * 0.000001;
@@ -39,17 +38,10 @@ return maxnum;
 // main program
 int main(int argc,char *argv[]){ 
 	double time0 = gettime();
-	int match;
-	int mismatch;
-	int gap; 
-	int optind=1;
+	int match, mismatch, gap, optind=1;
 	char * path;
 	char * out_path;
 	double total_traceback_time=0,total_score_time=0;int threads;
-      // decode arguments
-     /* for(i=0; i<argc; ++i)
-      {   printf("Argument %d : %s \n", i, argv[i]);
-      }*/
 	if(argc<13){
 		printf("Inadequate/wrong arguments or flags.\n");
 		printf("Usage: program -name ID -input PATH -match INT1 -mismatch INT2 -gap INT3 -threads INT4.\n");
@@ -69,30 +61,20 @@ int main(int argc,char *argv[]){
 		else if (!strcmp(argv[optind], "-match")) {
 			optind++;
 			match = atoi( argv[optind] );
-
-
 		}
 		else if (!strcmp(argv[optind], "-mismatch")) {
 			optind++;
 			mismatch = atoi( argv[optind] );
-
 		}
-
 		else if (!strcmp(argv[optind], "-gap")) {
 			optind++;
 			gap = atoi( argv[optind] );
-
-
 		}
 		else if (!strcmp(argv[optind], "-threads")) {
 			optind++;
 			threads = atoi( argv[optind] );
-
-
 		}
-
-		else
-		{
+		else{
 			fprintf(stderr, "%s is not a right flag to use!\n" ,argv[optind]);
 			printf("Usage: program -name ID -input PATH -match INT1 -mismatch INT2 -gap INT3 -threads INT4.\n");
 			fprintf(stderr,"exiting...\n");
@@ -131,10 +113,8 @@ int main(int argc,char *argv[]){
 		}
 	}
 
-
 	int k=0,i=0,w;
 	int length[5000];
-
 	while(i<bufsize+1){
 		if(((source[i]=='D' || source[i]=='Q') && source[i+1]==':') ||source[i]=='\0'){	
 			length[w]=i;
@@ -148,35 +128,23 @@ int main(int argc,char *argv[]){
 		char* seq0=(char*)calloc(((length[q+1]-length[q])-3),1);
 		char* seq1=(char*)calloc(((length[q+2]-length[q+1])-3),1);
 
+		int start0=length[q]+2, end0=length[q+1], start1=length[q+1]+2, end1=length[q+2];
 
-		int start0=length[q]+2;
-		int end0=length[q+1];
-		int start1=length[q+1]+2;
-		int end1=length[q+2];
-
-		int a=start0;int notneeded0=0;int notneeded1=0;int s=0;
+		int a=start0, notneeded0=0, notneeded1=0, s=0;
 		for (int u = 0; u < end0-start0; u++){
 			if((int)source[a]==13 || (int)source[a]==10 || (int)source[a]==9 )notneeded0++;
 			else {seq0[s]=source[a];s++;}
 			a++;
-
-
-
-
 		}
 		int v=start1;s=0;
 		for (int u = 0; u < end1-start1; u++){
 			if((int)source[v]==13 || (int)source[v]==10 || (int)source[v]==9 )notneeded1++;
 			else {seq1[s]=source[v];s++;}
 			v++;
-
 		}
 
 		/* Increment our line count */
 		pairs++;
-
-
-
 
 	    //***********************************************************************************************
 	    //IMPLEMENT ALGORITHM HERE...
@@ -199,63 +167,53 @@ int main(int argc,char *argv[]){
 	    	dp[i] = malloc(c * sizeof(int));
 	    }
 
-	    for(int i=0;i<m+1;i++) dp[0][i]=0; 
+	    for(int i=0;i<m+1;i++) 
+			dp[0][i]=0; 
 
-	    	for(int i=0;i<n+1;i++) dp[i][0]=0;
+		for(int i=0;i<n+1;i++) dp[i][0]=0;
 
-	    	double time5=gettime();
-	    	int max=0,min,tmp=0,l;
+		double time5=gettime();
+		int max=0,min,tmp=0,l;
 
-	    	a=0;
+		a=0;
 
-	    	if(r>c)min=c;else min=r;
-	    	omp_set_num_threads(threads);
+		if(r>c)min=c;else min=r;
+		omp_set_num_threads(threads);
 
-	    	a=0;int temp=0;
-	    	for (int i = 0; i < r+c-1; i++) {
-
-	    		k=i;
-	    		if(i<min){tmp++;}
-	    		else if(i>=min && i<maxnumber(c,r,-1) && i<c){temp++;}
-	    		else if(i>=min && i<maxnumber(c,r,-1) && i>=c){a++;}
-	    		else if(i>=maxnumber(c,r,-1)){a++;tmp--;temp++;}
+		a=0;int temp=0;
+		for (int i = 0; i < r+c-1; i++) {
+			k=i;
+			if(i<min){tmp++;}
+			else if(i>=min && i<maxnumber(c,r,-1) && i<c){temp++;}
+			else if(i>=min && i<maxnumber(c,r,-1) && i>=c){a++;}
+			else if(i>=maxnumber(c,r,-1)){a++;tmp--;temp++;}
 
 			#pragma omp parallel for private(score,gap1,gap2)
 
-	    		for (int j = a; j <tmp+a; j++){
-
-	    			if(j!=0 && (tmp+a+temp-j-1)!=0){
-
-	    				if(seq0[j-1]==seq1[tmp+a+temp-j-1-1]){
-	    					score=dp[j-1][tmp+a+temp-j-1-1]+match;
-	    				}
-	    				else{
-
-	    					score=dp[j-1][tmp+a+temp-j-1-1]+mismatch;
-	    				}
-
-	    				gap1=dp[j-1][tmp+a+temp-j-1]+gap;
-	    				gap2=dp[j][tmp+a+temp-j-1-1]+gap;
-	    				dp[j][tmp+a+temp-j-1]=maxnumber(score,gap1,gap2);
-	    				if(dp[j][tmp+a+temp-j-1]>max) max=dp[j][tmp+a+temp-j-1];
-	    			}
-
-	    		}
+			for (int j = a; j <tmp+a; j++){
+				if(j!=0 && (tmp+a+temp-j-1)!=0){
+					if(seq0[j-1]==seq1[tmp+a+temp-j-1-1]){
+						score=dp[j-1][tmp+a+temp-j-1-1]+match;
+					}
+					else{
+						score=dp[j-1][tmp+a+temp-j-1-1]+mismatch;
+					}
+					gap1=dp[j-1][tmp+a+temp-j-1]+gap;
+					gap2=dp[j][tmp+a+temp-j-1-1]+gap;
+					dp[j][tmp+a+temp-j-1]=maxnumber(score,gap1,gap2);
+					if(dp[j][tmp+a+temp-j-1]>max) max=dp[j][tmp+a+temp-j-1];
+				}
+			}
 
 			#pragma omp barrier
-
-	    	}
+		}
 
     	double time6=gettime();
     	total_score_time+=time6-time5;
     	int f=0;
-
 		for(int i=1;i<n+1;i++){ //compare each letter of seq1 with seq2
-
 			for(int j=1;j<m+1;j++){
-
 				if(dp[i][j]==max) {
-
 					f++;
 					traceback_steps++;
 
@@ -269,45 +227,35 @@ int main(int argc,char *argv[]){
 					 int ypos = l; 
 
 				    // Final answers for the respective strings 
-
 					 int * xans = malloc((l+1) * sizeof(int));
 					 int * yans = malloc((l+1) * sizeof(int));
 					 if (xans == NULL || yans == NULL ) {
 					 	fprintf(stderr, "malloc failed\n");
 					 	return(-1);
 					 }
-					 
 					 double time7=gettime();
 					 while ( d != 0 && p !=0 && d<=n && p<=m) { 	
-
-					 	if (seq0[d-1]== seq1[p-1]) 
-					 	{ 
+					 	if (seq0[d-1]== seq1[p-1]){ 
 					 		xans[xpos--] = (int)seq0[d - 1]; 
 					 		yans[ypos--] = (int)seq1[p- 1]; 
 					 		d--; p--; start_D--;
 					 	} 
-					 	else if (dp[d - 1][p - 1] + mismatch == dp[d][p]) 
-					 	{ 
+					 	else if (dp[d - 1][p - 1] + mismatch == dp[d][p]){ 
 					 		xans[xpos--] = (int)seq0[d - 1]; 
 					 		yans[ypos--] = (int)seq1[p - 1]; 
 					 		d--; p--;start_D--; 
 					 	} 
-					 	else if (dp[d - 1][p] + gap == dp[d][p]) 
-					 	{ 
+					 	else if (dp[d - 1][p] + gap == dp[d][p]){ 
 					 		xans[xpos--] = (int)seq0[d - 1]; 
 					 		yans[ypos--] = (int)'_'; 
 					 		d--; 
 					 	}
-				        else 
-				        { 
+				        else{ 
 				        	xans[xpos--] = (int)'_'; 
 				        	yans[ypos--] = (int)seq1[p - 1]; 
 				        	p--; 
 				        }
-				        
-
 				    }
-
 				    double time8=gettime();
 				    total_traceback_time+=time8-time7;
 				    fprintf(f2,"Match %d[Score: %d Start:%d Stop:%d]\n",f,max,start_D,j-1 );
@@ -317,20 +265,15 @@ int main(int argc,char *argv[]){
 				    for(int i=xpos+1;i<=l;i++){
 				    	fwrite(&xans[i],1, 1,f2 );
 				    }
-
 				    fprintf(f2,"\n" );
 				    fprintf(f2,"D:	" );
-
 				    for(int i=ypos+1;i<=l;i++){
 				    	fwrite(&yans[i],1, 1,f2 );
 				    }
-
 				    fprintf(f2,"\n" );
 				    free(xans);
 				    free(yans);
-
-				}
-				
+				}	
 			}
 		}
 		for (int i = 0; i < r; i++) {
@@ -338,17 +281,19 @@ int main(int argc,char *argv[]){
 		}
 		free(dp);
 		free(seq0);free(seq1);
-		}
-		double time1 = gettime();
-		fprintf(stderr, "A)Total pairs of Q & D : %d\n",pairs );
-		fprintf(stderr, "B)Total number of cells that had been used : %d\n",dim0+dim1 );
-		fprintf(stderr, "C)Total number of traceback steps : %d\n",traceback_steps );
-		fprintf(stderr, "D)Total runtime : %f\n",time1-time0 );
-		fprintf(stderr, "E)Total score calculation time :%f\n",total_score_time );
-		fprintf(stderr, "F)Total traceback time : %f\n",total_traceback_time);
-		int cups0=(dim0+dim1)/(time1-time0);
-		fprintf(stderr, "G)Cell Updates per second (regarding total runtime): %d\n",cups0 );
-		int cups1=(dim0+dim1)/total_score_time;
-		fprintf(stderr, "H)Cell Updates per second (regarding total score calculation time): %d\n",cups1);
-		return 0;
 	}
+	double time1 = gettime();
+	fprintf(stderr, "A)Total pairs of Q & D : %d\n",pairs );
+	fprintf(stderr, "B)Total number of cells that had been used : %d\n",dim0+dim1 );
+	fprintf(stderr, "C)Total number of traceback steps : %d\n",traceback_steps );
+	fprintf(stderr, "D)Total runtime : %f\n",time1-time0 );
+	fprintf(stderr, "E)Total score calculation time :%f\n",total_score_time );
+	fprintf(stderr, "F)Total traceback time : %f\n",total_traceback_time);
+	int cups0=(dim0+dim1)/(time1-time0);
+	fprintf(stderr, "G)Cell Updates per second (regarding total runtime): %d\n",cups0 );
+	int cups1=(dim0+dim1)/total_score_time;
+	fprintf(stderr, "H)Cell Updates per second (regarding total score calculation time): %d\n",cups1);
+	fprintf(stderr, "=====================================================================================================================================================================\n");
+
+	return 0;
+}
