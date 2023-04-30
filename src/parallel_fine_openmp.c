@@ -204,7 +204,9 @@ int main(int argc,char *argv[]){
 	    	for(int i=0;i<n+1;i++) dp[i][0]=0;
 
 	    	double time5=gettime();
-	    	int max=0,min,tmp=0,a=0,l;
+	    	int max=0,min,tmp=0,l;
+
+	    	a=0;
 
 	    	if(r>c)min=c;else min=r;
 	    	omp_set_num_threads(threads);

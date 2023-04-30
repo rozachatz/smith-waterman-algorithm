@@ -46,7 +46,6 @@ void * Waterman(void * data){
 	for(int q=sc->begin; q < sc->end ; q+=2 ){
 
 		char* seq0=(char*)calloc(((length[q+1]-length[q])-3),1), *seq1=(char*)calloc(((length[q+2]-length[q+1])-3),1);
-		char
 
 		int start0=length[q]+2, end0=length[q+1], start1=length[q+1]+2, end1=length[q+2];
 
