@@ -8,5 +8,3 @@ To download the large datasets used in the Smith Waterman algorithm implementati
 * Includes serial and parallel implementations using OpenMP threads to optimize performance
 * Provides both coarse and fine-level parallelization to optimize performance on different hardware
 * Includes a comprehensive set of test cases and a sample dataset to help evaluate the accuracy and performance of the algorithm
-
-Important Note: More
