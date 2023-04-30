@@ -41,19 +41,16 @@ struct Water{
 void * Waterman(void * data){
 
 	struct Water *sc = (struct Water *)data;
-	
 	int k;
+
 	for(int q=sc->begin; q < sc->end ; q+=2 ){
 
-		char* seq0=(char*)calloc(((length[q+1]-length[q])-3),1);
-		char* seq1=(char*)calloc(((length[q+2]-length[q+1])-3),1);
+		char* seq0=(char*)calloc(((length[q+1]-length[q])-3),1), *seq1=(char*)calloc(((length[q+2]-length[q+1])-3),1);
+		char
 
-		int start0=length[q]+2;
-		int end0=length[q+1];
-		int start1=length[q+1]+2;
-		int end1=length[q+2];
+		int start0=length[q]+2, end0=length[q+1], start1=length[q+1]+2, end1=length[q+2];
 
-		int a=start0;int notneeded0=0;int notneeded1=0;int s=0;
+		int a=start0, notneeded0=0, notneeded1=0, s=0;
 		for (int u = 0; u < end0-start0; u++){
 			if((int)source[a]==13 || (int)source[a]==10 || (int)source[a]==9 )notneeded0++;
 			else {seq0[s]=source[a];s++;}
@@ -76,19 +73,12 @@ void * Waterman(void * data){
 
 
 		//important initializations
-		int score;
-		int gap1;
-		int gap2;
-
-	    int n=end0-start0-notneeded0; //sequence1 length
-	    int m=end1-start1-notneeded1; //sequence2 length
-	    int c=m+1, r=n+1;
-
-	    dim0+=r;dim1+=c;
+		int score, gap1, gap2,  n=end0-start0-notneeded0, m=end1-start1-notneeded1, c=m+1, r=n+1;
 	    short int** dp;
 
 	    dp = malloc(r * sizeof(short int*));
-
+	    dim0+=r;dim1+=c;
+	    
 	    for (int i = 0; i < r; i++) {
 	    	dp[i] = malloc(c * sizeof(short int));
 	    }
@@ -226,7 +216,7 @@ void * Waterman(void * data){
 	}
 
 
-// main program
+	// main program
 	int main(int argc,char *argv[]){ 
 
 		double time0 = gettime();

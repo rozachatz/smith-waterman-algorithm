@@ -307,30 +307,24 @@ for(q=0; q < w-2 ; q+=2 )
 					        
 					   
 					    }
-					    time8=gettime();
-					    total_traceback_time+=time8-time7;
-					   fprintf(f2,"Match %d[Score: %d Start:%d Stop:%d]\n",f,max,start_D,j-1 );
-					   fprintf(f2,"\n" );
-					  // fwrite(str1,sizeof(str2), 1,f2 );
-					   fprintf(f2,"Q:	" );
-					  for(z=xpos+1;z<=l;z++){
-                        fwrite(&xans[z],1, 1,f2 );
-            
-                        }
-                        fprintf(f2,"\n" );
-                        
-                         fprintf(f2,"D:	" );
-                         for(z=ypos+1;z<=l;z++){
-
+						time8=gettime();
+						total_traceback_time+=time8-time7;
+						fprintf(f2,"Match %d[Score: %d Start:%d Stop:%d]\n",f,max,start_D,j-1 );
+						fprintf(f2,"\n" );
+						// fwrite(str1,sizeof(str2), 1,f2 );
+						fprintf(f2,"Q:	" );
+						for(z=xpos+1;z<=l;z++){
+						fwrite(&xans[z],1, 1,f2 );
+						}
+						fprintf(f2,"\n" );
+						fprintf(f2,"D:	" );
+                        for(z=ypos+1;z<=l;z++){
                         fwrite(&yans[z],1, 1,f2 );
                         }
 
                         fprintf(f2,"\n" );
-
 					    free(xans);
-					    free(yans);
-					    
-
+					    free(yans);					    
 					}
 					
 				}
